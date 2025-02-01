@@ -18,14 +18,13 @@ const signUp = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({
+    const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
       age
     });
 
-    await newUser.save();
     res.status(201).json({ message: 'User signed up successfully', user: newUser });
 
   } catch (error) {
@@ -52,7 +51,7 @@ const login= async(req, res)=>{
             return res.status(401).json({message: 'Invalid credentials'});
         }
 
-        const token= jwt.sign({id: userExist._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
+        const token= jwt.sign({id: userExist.id}, process.env.JWT_SECRET, {expiresIn: '1h'});
         res.status(200).json({message: 'User login successful', token});
         
     } catch (error) {
