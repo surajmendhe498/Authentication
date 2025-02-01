@@ -75,6 +75,11 @@ const updateUser = async (req, res) => {
         const { id } = req.params;
         const { name, email, password, age } = req.body;
 
+         // Ensure the user can only update their own account
+        if(req.user.id != id){
+            return res.status(403).json({message: 'You are not authorized to update this user.'});
+        }
+
         const user = await User.findOne({ where: { id } });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -107,6 +112,11 @@ const updateUser = async (req, res) => {
 const deleteUser= async(req, res)=>{
     try {
         const {id}= req.params;
+
+        // Ensure the user can only update their own account
+        if(req.user.id != id){
+            return res.status(403).json({message: 'You are not authorized to update this user.'});
+        }
 
         const deleteUser= await User.findOne({where: {id}});
         if(!deleteUser){
